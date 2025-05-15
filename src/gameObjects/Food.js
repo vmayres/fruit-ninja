@@ -20,6 +20,12 @@ export default class Food extends Phaser.Physics.Arcade.Sprite
         this.setCircle(this.radius);
         this.setAngularVelocity(Phaser.Math.Between(-300, 300));
         this.scene = scene;
+
+        // Definir cor aleatória para a fruta
+        this.fruitColors = [0x3498db, 0xe74c3c, 0x2ecc40]; // azul, vermelho, verde
+        this.fruitColorIndex = Phaser.Math.Between(0, 2);
+        this.fruitColor = this.fruitColors[this.fruitColorIndex];
+        this.setTint(this.fruitColor);
     }
 
     preUpdate (time, delta)
@@ -54,7 +60,10 @@ export default class Food extends Phaser.Physics.Arcade.Sprite
 
     hit ()
     {
-        this.scene.updateScore(10);
+        // Se a cor do cursor for igual à da fruta, dobra a pontuação
+        const cursorColor = this.scene.cursorColor;
+        const pontos = (cursorColor === this.fruitColor) ? 20 : 10;
+        this.scene.updateScore(pontos);
         this.scene.removeFood(this);
     }
 }

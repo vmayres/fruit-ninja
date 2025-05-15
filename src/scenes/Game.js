@@ -46,6 +46,11 @@ export class Game extends Phaser.Scene
         this.trailPointCount = 20;
         this.targetRadius = 100;
         this.targetCircle = new Phaser.Geom.Circle(this.centreX, 300, this.targetRadius);
+        
+        // Adiciona variáveis de cor e estado do cursor
+        this.cursorColors = [0x3498db, 0xe74c3c, 0x2ecc40]; // azul, vermelho, verde
+        this.cursorColorIndex = 0;
+        this.cursorColor = this.cursorColors[this.cursorColorIndex];
     }
 
     initGameUi ()
@@ -124,6 +129,20 @@ export class Game extends Phaser.Scene
             this.trailCurve.addPoint(pointer.x, pointer.y);
         });
 
+        // Troca de cor do cursor com as teclas 1, 2, 3
+        this.input.keyboard.on('keydown-ONE', () => {
+            this.cursorColorIndex = 0;
+            this.cursorColor = this.cursorColors[this.cursorColorIndex];
+        });
+        this.input.keyboard.on('keydown-TWO', () => {
+            this.cursorColorIndex = 1;
+            this.cursorColor = this.cursorColors[this.cursorColorIndex];
+        });
+        this.input.keyboard.on('keydown-THREE', () => {
+            this.cursorColorIndex = 2;
+            this.cursorColor = this.cursorColors[this.cursorColorIndex];
+        });
+
         // pointerdown once event
         this.input.once('pointerdown', () =>
         {
@@ -161,8 +180,8 @@ export class Game extends Phaser.Scene
             // If there is more than one point in the array
             if (i > 4)
             {
-                // Draw a line between the current point and the previous point
-                this.trailGraphics.lineStyle(this.trailThickness, 0xffffff, 1);
+                // Usa a cor do cursor
+                this.trailGraphics.lineStyle(this.trailThickness, this.cursorColor, 1);
                 this.trailCurve.draw(this.trailGraphics, 64);
             }
         }
