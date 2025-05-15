@@ -62,8 +62,33 @@ export default class Food extends Phaser.Physics.Arcade.Sprite
     {
         // Se a cor do cursor for igual à da fruta, dobra a pontuação
         const cursorColor = this.scene.cursorColor;
-        const pontos = (cursorColor === this.fruitColor) ? 20 : 10;
+        const isCombo = (cursorColor === this.fruitColor);
+        let pontos = isCombo ? 20 : 10;
+
+        // Combo meter logic
+        if (isCombo) {
+            // Se a sequência está começando ou continua
+            if (this.scene.comboSequenceColor === null || this.scene.comboSequenceColor === cursorColor) {
+                this.scene.comboSequenceColor = cursorColor;
+                this.scene.comboMeter = parseFloat((this.scene.comboMeter + 0.1).toFixed(1));
+                this.scene.comboSequenceCount++;
+            } else {
+                // Sequência foi quebrada, aplica combo e reseta
+                pontos = Math.round(pontos * this.scene.comboMeter);
+                this.scene.comboMeter = 1.0;
+                this.scene.comboSequenceColor = null;
+                this.scene.comboSequenceCount = 0;
+            }
+        } else {
+            // Se errou a cor, aplica combo e reseta
+            pontos = Math.round(pontos * this.scene.comboMeter);
+            this.scene.comboMeter = 1.0;
+            this.scene.comboSequenceColor = null;
+            this.scene.comboSequenceCount = 0;
+        }
+
         this.scene.updateScore(pontos);
+        this.scene.updateComboText();
         this.scene.removeFood(this);
     }
 }

@@ -51,6 +51,13 @@ export class Game extends Phaser.Scene
         this.cursorColors = [0x3498db, 0xe74c3c, 0x2ecc40]; // azul, vermelho, verde
         this.cursorColorIndex = 0;
         this.cursorColor = this.cursorColors[this.cursorColorIndex];
+
+        // Combo meter
+        this.comboMeter = 1.0;
+        this.comboSequenceColor = null;
+        this.comboSequenceCount = 0;
+        // Texto do combo
+        this.comboText = null;
     }
 
     initGameUi ()
@@ -77,6 +84,12 @@ export class Game extends Phaser.Scene
             stroke: '#000000', strokeThickness: 8,
         })
             .setDepth(100);
+
+        // Texto do combo
+        this.comboText = this.add.text(20, 100, 'ComboMeter = 1.0x', {
+            fontFamily: 'Arial Black', fontSize: 28, color: '#ffe066',
+            stroke: '#000000', strokeThickness: 8,
+        }).setDepth(100);
 
         // Create game over text
         this.gameOverText = this.add.text(this.scale.width * 0.5, this.scale.height * 0.5, 'Game Over', {
@@ -262,6 +275,10 @@ export class Game extends Phaser.Scene
         if (this.lives === 0) {
             this.GameOver();
         }
+    }
+
+    updateComboText () {
+        this.comboText.setText(`ComboMeter = ${this.comboMeter.toFixed(1)}x`);
     }
 
     GameOver ()
