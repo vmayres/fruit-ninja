@@ -6,6 +6,7 @@ import ASSETS from '../assets.js';
 import ANIMATION from '../animation.js';
 import Food from '../gameObjects/Food.js';
 import TrailPoint from '../gameObjects/TrailPoint.js';
+import Bomb from '../gameObjects/Bomb.js';
 
 export class Game extends Phaser.Scene
 {
@@ -236,7 +237,18 @@ export class Game extends Phaser.Scene
 
     addFood ()
     {
-        this.foodGroup.add(new Food(this, this.targetCircle));
+        // 15% chance de ser bomba
+        if (Phaser.Math.FloatBetween(0, 1) < 0.15) {
+            // Posição aleatória semelhante à fruta
+            const sceneWidth = this.scale.width;
+            const range = 200;
+            const x = Phaser.Math.Between(-range, range) + (sceneWidth * 0.5);
+            const y = this.scale.height + 100;
+            // Corrige: importa Bomb diretamente, não usa require
+            this.foodGroup.add(new Bomb(this, x, y));
+        } else {
+            this.foodGroup.add(new Food(this, this.targetCircle));
+        }
     }
 
     removeFood (food)
@@ -250,6 +262,10 @@ export class Game extends Phaser.Scene
                 this.addFoodWave();
             });
         }
+    }
+
+    removeItem(item) {
+        this.foodGroup.remove(item, true, true);
     }
 
     addExplosion (x, y)
