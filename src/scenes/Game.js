@@ -109,7 +109,33 @@ export class Game extends Phaser.Scene
 
     initGameUi ()
     {
-        // Create tutorial text
+        // Calcula espaçamento igual para três textos na parte superior
+        const spacing = this.scale.width / 3;
+        const y = 20;
+
+        // Vidas (esquerda)
+        this.livesText = this.add.text(spacing * 0 + spacing / 2, y, 'Vidas: 3', {
+            fontFamily: 'Arial Black', fontSize: 28, color: '#ff5555',
+            stroke: '#000000', strokeThickness: 8,
+        })
+            .setOrigin(0.5, 0)
+            .setDepth(100);
+
+        // Pontuação (centro)
+        this.scoreText = this.add.text(spacing * 1 + spacing / 2, y, 'Pontuação: 0', {
+            fontFamily: 'Arial Black', fontSize: 28, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 8,
+        })
+            .setOrigin(0.5, 0)
+            .setDepth(100);
+
+        // Combo (direita)
+        this.comboText = this.add.text(spacing * 2 + spacing / 2, y, 'ComboMeter = 1.0x', {
+            fontFamily: 'Arial Black', fontSize: 28, color: '#ffe066',
+            stroke: '#000000', strokeThickness: 8,
+        }).setOrigin(0.5, 0).setDepth(100);
+
+        // Texto tutorial central
         this.tutorialText = this.add.text(this.centreX, this.centreY, 'Tap to start!', {
             fontFamily: 'Arial Black', fontSize: 42, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
@@ -118,27 +144,7 @@ export class Game extends Phaser.Scene
             .setOrigin(0.5)
             .setDepth(100);
 
-        // Create score text
-        this.scoreText = this.add.text(20, 20, 'Score: 0', {
-            fontFamily: 'Arial Black', fontSize: 28, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-        })
-            .setDepth(100);
-
-        // Create lives text below score
-        this.livesText = this.add.text(20, 60, 'Vidas: 3', {
-            fontFamily: 'Arial Black', fontSize: 28, color: '#ff5555',
-            stroke: '#000000', strokeThickness: 8,
-        })
-            .setDepth(100);
-
-        // Texto do combo
-        this.comboText = this.add.text(20, 100, 'ComboMeter = 1.0x', {
-            fontFamily: 'Arial Black', fontSize: 28, color: '#ffe066',
-            stroke: '#000000', strokeThickness: 8,
-        }).setDepth(100);
-
-        // Create game over text
+        // Texto Game Over
         this.gameOverText = this.add.text(this.scale.width * 0.5, this.scale.height * 0.5, 'Game Over', {
             fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
