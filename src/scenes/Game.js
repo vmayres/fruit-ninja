@@ -23,11 +23,12 @@ export class Game extends Phaser.Scene
         // this.initPlayer();
         this.initInput();
         this.initPhysics();
-        // Input para resetar barra
+        // Input para resetar barra e mostrar texto
         this.input.keyboard.on('keydown-SPACE', () => {
             if (this.fruitCutCount >= this.barFruitsGoal) {
                 this.fruitCutCount = 0;
                 this.updateProgressBar();
+                this.showFreezeText();
             }
         });
     }
@@ -37,6 +38,30 @@ export class Game extends Phaser.Scene
         if (!this.gameStarted) return;
         this.drawSlash();
         this.checkCollisions();
+        // Aplica efeito freeze frame a frame
+        if (this.isFreezeActive) {
+            this.foodGroup.getChildren().forEach(obj => {
+                if (obj.body && obj.body.velocity) {
+                    if (!obj._isFrozen) {
+                        // Salva velocidade original só uma vez
+                        obj._originalVelocity = { x: obj.body.velocity.x, y: obj.body.velocity.y };
+                        obj._isFrozen = true;
+                    }
+                    // Aplica multiplicador de freeze sem alterar direção
+                    obj.body.velocity.x = obj._originalVelocity.x * 0.3;
+                    obj.body.velocity.y = obj._originalVelocity.y * 0.3;
+                }
+            });
+        } else {
+            // Se não está em freeze, restaura velocidade se necessário
+            this.foodGroup.getChildren().forEach(obj => {
+                if (obj._isFrozen && obj._originalVelocity) {
+                    obj.body.velocity.x = obj._originalVelocity.x;
+                    obj.body.velocity.y = obj._originalVelocity.y;
+                    obj._isFrozen = false;
+                }
+            });
+        }
     }
 
     initVariables ()
@@ -74,6 +99,9 @@ export class Game extends Phaser.Scene
         this.barCurrentWidth = 0;
         this.barFruitsGoal = 15;
         this.barGraphics = null;
+
+        this.isFreezeActive = false;
+        this.freezeTimer = null;
     }
 
     initGameUi ()
@@ -334,6 +362,38 @@ export class Game extends Phaser.Scene
     updateProgressBar() {
         this.barCurrentWidth = Math.min(this.barMaxWidth * (this.fruitCutCount / this.barFruitsGoal), this.barMaxWidth);
         this.drawProgressBar();
+    }
+
+    showFreezeText() {
+        if (this.freezeText && this.freezeText.active) {
+            this.freezeText.destroy();
+        }
+        this.freezeText = this.add.text(
+            this.scale.width / 2,
+            this.scale.height / 2,
+            'FREEZE',
+            {
+                fontFamily: 'Arial Black',
+                fontSize: 96,
+                color: '#3498db',
+                stroke: '#000',
+                strokeThickness: 10,
+                align: 'center'
+            }
+        ).setOrigin(0.5).setDepth(999);
+        this.time.delayedCall(1000, () => {
+            if (this.freezeText) this.freezeText.destroy();
+        });
+        this.applyFreezeEffect();
+    }
+
+    applyFreezeEffect() {
+        // Ativa flag global e timer
+        this.isFreezeActive = true;
+        if (this.freezeTimer) this.freezeTimer.remove(false);
+        this.freezeTimer = this.time.delayedCall(10000, () => {
+            this.isFreezeActive = false;
+        });
     }
 
     GameOver ()

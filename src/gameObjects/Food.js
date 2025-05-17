@@ -26,11 +26,17 @@ export default class Food extends Phaser.Physics.Arcade.Sprite
         this.fruitColorIndex = Phaser.Math.Between(0, 2);
         this.fruitColor = this.fruitColors[this.fruitColorIndex];
         this.setTint(this.fruitColor);
+
+        this._originalVelocity = null;
     }
 
     preUpdate (time, delta)
     {
         super.preUpdate(time, delta);
+        // Salva a velocidade original se ainda não foi salva
+        if (!this._originalVelocity && this.body && (this.body.velocity.x !== 0 || this.body.velocity.y !== 0)) {
+            this._originalVelocity = { x: this.body.velocity.x, y: this.body.velocity.y };
+        }
         if (this.y > this.scene.scale.height + this.height && this.body.velocity.y > 0)
         {
             this.scene.updateLives(-1);

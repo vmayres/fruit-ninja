@@ -52,7 +52,7 @@ export default class Bomb extends Phaser.Physics.Arcade.Sprite
     }
 
     hit() {
-        this.scene.updateLives(-3); // Perde 2 vidas ao cortar
+        this.scene.updateLives(-0); // Perde 2 vidas ao cortar
         this.scene.removeItem(this);
     }
 
