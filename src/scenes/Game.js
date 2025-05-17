@@ -23,6 +23,13 @@ export class Game extends Phaser.Scene
         // this.initPlayer();
         this.initInput();
         this.initPhysics();
+        // Input para resetar barra
+        this.input.keyboard.on('keydown-SPACE', () => {
+            if (this.fruitCutCount >= this.barFruitsGoal) {
+                this.fruitCutCount = 0;
+                this.updateProgressBar();
+            }
+        });
     }
 
     update ()
@@ -59,6 +66,14 @@ export class Game extends Phaser.Scene
         this.comboSequenceCount = 0;
         // Texto do combo
         this.comboText = null;
+
+        // Barra de progresso
+        this.fruitCutCount = 0;
+        this.barMaxWidth = 500;
+        this.barHeight = 24;
+        this.barCurrentWidth = 0;
+        this.barFruitsGoal = 15;
+        this.barGraphics = null;
     }
 
     initGameUi ()
@@ -101,6 +116,15 @@ export class Game extends Phaser.Scene
             .setOrigin(0.5)
             .setDepth(100)
             .setVisible(false);
+
+        // Barra azul central inferior
+        const barX = (this.scale.width - this.barMaxWidth) / 2;
+        const barY = this.scale.height - 60;
+        this.barGraphics = this.add.graphics();
+        this.barGraphics.setDepth(200);
+        this.barGraphics.x = barX;
+        this.barGraphics.y = barY;
+        this.drawProgressBar();
     }
 
     initAnimations ()
@@ -272,6 +296,15 @@ export class Game extends Phaser.Scene
         this.scoreText.setText(`Score: ${this.score}`);
     }
 
+    fruitCutProgress() {
+        this.fruitCutCount++;
+        this.updateProgressBar();
+        if (this.fruitCutCount >= this.barFruitsGoal) {
+            this.barCurrentWidth = this.barMaxWidth;
+            this.drawProgressBar();
+        }
+    }
+
     updateLives (change = 0) {
         this.lives += change;
         if (this.lives < 0) this.lives = 0;
@@ -283,6 +316,24 @@ export class Game extends Phaser.Scene
 
     updateComboText () {
         this.comboText.setText(`ComboMeter = ${this.comboMeter.toFixed(1)}x`);
+    }
+
+    drawProgressBar() {
+        this.barGraphics.clear();
+        // Fundo da barra (cinza)
+        this.barGraphics.fillStyle(0x222f3e, 0.5);
+        this.barGraphics.fillRect(0, 0, this.barMaxWidth, this.barHeight);
+        // Barra azul
+        this.barGraphics.fillStyle(0x3498db, 1);
+        this.barGraphics.fillRect(0, 0, this.barCurrentWidth, this.barHeight);
+        // Borda
+        this.barGraphics.lineStyle(3, 0xffffff, 1);
+        this.barGraphics.strokeRect(0, 0, this.barMaxWidth, this.barHeight);
+    }
+
+    updateProgressBar() {
+        this.barCurrentWidth = Math.min(this.barMaxWidth * (this.fruitCutCount / this.barFruitsGoal), this.barMaxWidth);
+        this.drawProgressBar();
     }
 
     GameOver ()

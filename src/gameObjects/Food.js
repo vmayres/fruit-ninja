@@ -87,6 +87,7 @@ export default class Food extends Phaser.Physics.Arcade.Sprite
             this.scene.comboSequenceCount = 0;
         }
 
+        this.scene.fruitCutProgress();
         this.scene.updateScore(pontos);
         this.scene.updateComboText();
         this.scene.removeFood(this);
