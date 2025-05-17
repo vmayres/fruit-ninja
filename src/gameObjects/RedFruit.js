@@ -66,11 +66,17 @@ export default class RedFruit extends Phaser.Physics.Arcade.Sprite
 
     hit() {
         // Permite cortar com qualquer cor, mas só faz combo se acertar a cor
-        let pontos = (this.scene.cursorColor === this.fruitColor) ? 20 : 10;
-        // Lógica de combo igual ao Food.js
-        const isCombo = (this.scene.cursorColor === this.fruitColor);
+        let pontos = 10;
+        let isCombo = false;
+        if (this.scene.isYellowActive) {
+            pontos = 30;
+            isCombo = true; // Sempre mantém combo
+        } else {
+            pontos = (this.scene.cursorColor === this.fruitColor) ? 20 : 10;
+            isCombo = (this.scene.cursorColor === this.fruitColor);
+        }
         if (isCombo) {
-            if (this.scene.comboSequenceColor === null || this.scene.comboSequenceColor === this.fruitColor) {
+            if (this.scene.comboSequenceColor === null || this.scene.comboSequenceColor === this.fruitColor || this.scene.isYellowActive) {
                 this.scene.comboSequenceColor = this.fruitColor;
                 this.scene.comboMeter = parseFloat((this.scene.comboMeter + 0.1).toFixed(1));
                 this.scene.comboSequenceCount++;

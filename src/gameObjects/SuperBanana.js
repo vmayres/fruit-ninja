@@ -1,33 +1,42 @@
 import ASSETS from '../assets.js';
 
-export default class Bomb extends Phaser.Physics.Arcade.Sprite
+export default class SuperBanana extends Phaser.Physics.Arcade.Sprite 
 {
-    constructor(scene, targetCircle) {
+    constructor(scene, targetCircle) 
+    {
         const sceneWidth = scene.scale.width;
         const sceneHeight = scene.scale.height;
         const targetPoint = targetCircle.getRandomPoint();
         const randomVelocity = Phaser.Math.Between(1000, 1200);
         const range = 200;
-        const x = Phaser.Math.Between(-range, range) + (sceneWidth * 0.5);
+        const x = Phaser.Math.Between(- range, range) + (sceneWidth * 0.5);
 
-        super(scene, x, sceneHeight + 100, ASSETS.spritesheet.fruitPlus.key, 136);
+        // Corrige o id do frame para 159 (SuperBanana)
+        super(scene, x, sceneHeight + 100, ASSETS.spritesheet.fruitPlus.key, 159);
         
         this.setScale(72/16);
         this.radius = (this.width * 0.5) * (72/16);
         scene.add.existing(this);
         scene.physics.add.existing(this);
         scene.physics.moveToObject(this, targetPoint, randomVelocity);
-        this.setCircle(this.radius);
+        this.body.setCircle(this.radius);
         this.setAngularVelocity(Phaser.Math.Between(-300, 300));
         this.scene = scene;
         this.setDepth(90);
+
+        this._originalVelocity = null;
     }
 
     preUpdate (time, delta)
     {
         super.preUpdate(time, delta);
+        // Salva a velocidade original se ainda não foi salva
+        if (!this._originalVelocity && this.body && (this.body.velocity.x !== 0 || this.body.velocity.y !== 0)) {
+            this._originalVelocity = { x: this.body.velocity.x, y: this.body.velocity.y };
+        }
         if (this.y > this.scene.scale.height + this.height && this.body.velocity.y > 0)
         {
+            this.scene.updateLives(-1);
             this.scene.removeFood(this);
         }
     }
@@ -53,8 +62,9 @@ export default class Bomb extends Phaser.Physics.Arcade.Sprite
     }
 
     hit() {
-        this.scene.updateLives(-3); // Perde 2 vidas ao cortar
-        this.scene.removeItem(this);
+        this.scene.updateScore(50);
+        this.scene.fruitCutProgress();
+        this.scene.updateComboText();
+        this.scene.onSuperBananaCut(this);
     }
-
 }

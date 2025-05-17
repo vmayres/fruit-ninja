@@ -9,6 +9,7 @@ import Bomb from '../gameObjects/Bomb.js';
 import RedFruit from '../gameObjects/RedFruit.js';
 import GreenFruit from '../gameObjects/GreenFruit.js';
 import BlueFruit from '../gameObjects/BlueFruit.js';
+import SuperBanana from '../gameObjects/SuperBanana.js'; // Importa a nova classe SuperBanana
 
 
 export class Game extends Phaser.Scene
@@ -84,7 +85,7 @@ export class Game extends Phaser.Scene
         this.targetCircle = new Phaser.Geom.Circle(this.centreX, 300, this.targetRadius);
         
         // Remove cursorType, deixa só cursorColor
-        this.cursorColors = [0x3498db, 0xe74c3c, 0x2ecc40]; // azul, vermelho, verde
+        this.cursorColors = [0xe74c3c, 0x2ecc40, 0x3498db]; // azul, vermelho, verde
         this.cursorColorIndex = 0;
         this.cursorColor = this.cursorColors[this.cursorColorIndex];
 
@@ -200,17 +201,20 @@ export class Game extends Phaser.Scene
             this.trailCurve.addPoint(pointer.x, pointer.y);
         });
 
-        // Troca de cor do cursor com as teclas 1, 2, 3
+        // Troca de cor do cursor com as teclas 1, 2, 3 (R G B), mas bloqueia durante GOLD TIME
         this.input.keyboard.on('keydown-ONE', () => {
-            this.cursorColorIndex = 0;
+            if (this.isYellowActive) return;
+            this.cursorColorIndex = 0; // Red
             this.cursorColor = this.cursorColors[this.cursorColorIndex];
         });
         this.input.keyboard.on('keydown-TWO', () => {
-            this.cursorColorIndex = 1;
+            if (this.isYellowActive) return;
+            this.cursorColorIndex = 1; // Green
             this.cursorColor = this.cursorColors[this.cursorColorIndex];
         });
         this.input.keyboard.on('keydown-THREE', () => {
-            this.cursorColorIndex = 2;
+            if (this.isYellowActive) return;
+            this.cursorColorIndex = 2; // Blue
             this.cursorColor = this.cursorColors[this.cursorColorIndex];
         });
 
@@ -297,6 +301,8 @@ export class Game extends Phaser.Scene
         // 10% chance de ser bomba
         if (Phaser.Math.FloatBetween(0, 1) < 0.10) {
             this.foodGroup.add(new Bomb(this, this.targetCircle));
+        } else if (Phaser.Math.FloatBetween(0, 1) < 0.05) {
+            this.foodGroup.add(new SuperBanana(this, this.targetCircle));
         } else {
             // 30% chance para cada fruta
             const r = Phaser.Math.FloatBetween(0, 1);
@@ -361,11 +367,13 @@ export class Game extends Phaser.Scene
         }
     }
 
-    updateComboText () {
+    updateComboText () 
+    {
         this.comboText.setText(`ComboMeter = ${this.comboMeter.toFixed(1)}x`);
     }
 
-    drawProgressBar() {
+    drawProgressBar() 
+    {
         this.barGraphics.clear();
         // Fundo da barra (cinza)
         this.barGraphics.fillStyle(0x222f3e, 0.5);
@@ -378,12 +386,14 @@ export class Game extends Phaser.Scene
         this.barGraphics.strokeRect(0, 0, this.barMaxWidth, this.barHeight);
     }
 
-    updateProgressBar() {
+    updateProgressBar() 
+    {
         this.barCurrentWidth = Math.min(this.barMaxWidth * (this.fruitCutCount / this.barFruitsGoal), this.barMaxWidth);
         this.drawProgressBar();
     }
 
-    showFreezeText() {
+    showFreezeText() 
+    {
         if (this.freezeText && this.freezeText.active) {
             this.freezeText.destroy();
         }
@@ -406,13 +416,85 @@ export class Game extends Phaser.Scene
         this.applyFreezeEffect();
     }
 
-    applyFreezeEffect() {
+    applyFreezeEffect() 
+    {
         // Ativa flag global e timer
         this.isFreezeActive = true;
         if (this.freezeTimer) this.freezeTimer.remove(false);
         this.freezeTimer = this.time.delayedCall(10000, () => {
             this.isFreezeActive = false;
         });
+    }
+
+    onSuperBananaCut(superBanana) 
+    {
+        this.removeFood(superBanana);
+        // Aplica o tint amarelo em todas as frutas e no cursor
+        this.isYellowActive = true;
+        this.foodGroup.getChildren().forEach(obj => {
+            if (obj.setTint) obj.setTint(0xfff200);
+            obj._isYellow = true;
+        });
+        this.cursorColor = 0xfff200;
+        // Exibe texto GOLD TIME
+        if (this.goldText && this.goldText.active) {
+            this.goldText.destroy();
+        }
+        this.goldText = this.add.text(
+            this.scale.width / 2,
+            this.scale.height / 2,
+            'GOLD TIME',
+            {
+                fontFamily: 'Arial Black',
+                fontSize: 96,
+                color: '#fff200',
+                stroke: '#000',
+                strokeThickness: 10,
+                align: 'center'
+            }
+        ).setOrigin(0.5).setDepth(999);
+        this.time.delayedCall(1000, () => {
+            if (this.goldText) this.goldText.destroy();
+        });
+        if (this.yellowTimer) this.yellowTimer.remove(false);
+        this.yellowTimer = this.time.delayedCall(10000, () => {
+            this.isYellowActive = false;
+            this.foodGroup.getChildren().forEach(obj => {
+                if (obj.clearTint) obj.clearTint();
+                obj._isYellow = false;
+            });
+            // Restaura cor do cursor
+            this.cursorColor = this.cursorColors[this.cursorColorIndex];
+        });
+    }
+
+    // Garante que novas frutas recebam o tint amarelo durante GOLD TIME
+    addFood() {
+        // 10% chance de ser bomba
+        if (Phaser.Math.FloatBetween(0, 1) < 0.10) {
+            const bomb = new Bomb(this, this.targetCircle);
+            this.foodGroup.add(bomb);
+            return;
+        } else if (Phaser.Math.FloatBetween(0, 1) < 0.05) {
+            const banana = new SuperBanana(this, this.targetCircle);
+            this.foodGroup.add(banana);
+            return;
+        }
+        // 30% chance para cada fruta
+        const r = Phaser.Math.FloatBetween(0, 1);
+        let fruit;
+        if (r < 1/3) {
+            fruit = new RedFruit(this, this.targetCircle);
+        } else if (r < 2/3) {
+            fruit = new GreenFruit(this, this.targetCircle);
+        } else {
+            fruit = new BlueFruit(this, this.targetCircle);
+        }
+        if (this.isYellowActive && fruit.setTint) {
+            fruit.setTint(0xfff200);
+            fruit._isYellow = true;
+        }
+        this.foodGroup.add(fruit);
     }
 
     GameOver ()
