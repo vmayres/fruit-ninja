@@ -9,10 +9,10 @@ export default class Bomb extends Phaser.Physics.Arcade.Sprite
         const randomVelocity = Phaser.Math.Between(1000, 1200);
         const range = 200;
         const x = Phaser.Math.Between(-range, range) + (sceneWidth * 0.5);
-        const bombFrame = 105; // frame do tiles.png para bomba
-        super(scene, x, sceneHeight + 100, ASSETS.spritesheet.tiles.key, bombFrame);
-
-        this.radius = this.width * 0.5;
+        // Usa o mesmo spritesheet das frutas, mas sempre o frame 99
+        super(scene, x, sceneHeight + 100, ASSETS.spritesheet.fruitPlus.key, 136);
+        this.setScale(72/16);
+        this.radius = (this.width * 0.5) * (72/16);
         scene.add.existing(this);
         scene.physics.add.existing(this);
         scene.physics.moveToObject(this, targetPoint, randomVelocity);

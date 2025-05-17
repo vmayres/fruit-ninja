@@ -4,9 +4,12 @@
 */
 import ASSETS from '../assets.js';
 import ANIMATION from '../animation.js';
-import Food from '../gameObjects/Food.js';
 import TrailPoint from '../gameObjects/TrailPoint.js';
 import Bomb from '../gameObjects/Bomb.js';
+import RedFruit from '../gameObjects/RedFruit.js';
+import GreenFruit from '../gameObjects/GreenFruit.js';
+import BlueFruit from '../gameObjects/BlueFruit.js';
+
 
 export class Game extends Phaser.Scene
 {
@@ -80,7 +83,7 @@ export class Game extends Phaser.Scene
         this.targetRadius = 100;
         this.targetCircle = new Phaser.Geom.Circle(this.centreX, 300, this.targetRadius);
         
-        // Adiciona variáveis de cor e estado do cursor
+        // Remove cursorType, deixa só cursorColor
         this.cursorColors = [0x3498db, 0xe74c3c, 0x2ecc40]; // azul, vermelho, verde
         this.cursorColorIndex = 0;
         this.cursorColor = this.cursorColors[this.cursorColorIndex];
@@ -168,6 +171,8 @@ export class Game extends Phaser.Scene
     initPhysics ()
     {
         this.foodGroup = this.add.group();
+        this.enemyBulletGroup = this.add.group();
+        this.playerBulletGroup = this.add.group();
     }
 
     initPlayer ()
@@ -283,11 +288,19 @@ export class Game extends Phaser.Scene
 
     addFood ()
     {
-        // 15% chance de ser bomba
-        if (Phaser.Math.FloatBetween(0, 1) < 0.15) {
+        // 10% chance de ser bomba
+        if (Phaser.Math.FloatBetween(0, 1) < 0.10) {
             this.foodGroup.add(new Bomb(this, this.targetCircle));
         } else {
-            this.foodGroup.add(new Food(this, this.targetCircle));
+            // 30% chance para cada fruta
+            const r = Phaser.Math.FloatBetween(0, 1);
+            if (r < 1/3) {
+                this.foodGroup.add(new RedFruit(this, this.targetCircle));
+            } else if (r < 2/3) {
+                this.foodGroup.add(new GreenFruit(this, this.targetCircle));
+            } else {
+                this.foodGroup.add(new BlueFruit(this, this.targetCircle));
+            }
         }
     }
 
