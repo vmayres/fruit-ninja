@@ -116,12 +116,6 @@ export class Game extends Phaser.Scene
     initPhysics ()
     {
         this.foodGroup = this.add.group();
-        this.enemyBulletGroup = this.add.group();
-        this.playerBulletGroup = this.add.group();
-
-        // this.physics.add.overlap(this.player, this.enemyBulletGroup, this.hitPlayer, null, this);
-        // this.physics.add.overlap(this.playerBulletGroup, this.enemyGroup, this.hitEnemy, null, this);
-        // this.physics.add.overlap(this.player, this.enemyGroup, this.hitPlayer, null, this);
     }
 
     initPlayer ()
@@ -239,13 +233,7 @@ export class Game extends Phaser.Scene
     {
         // 15% chance de ser bomba
         if (Phaser.Math.FloatBetween(0, 1) < 0.15) {
-            // Posição aleatória semelhante à fruta
-            const sceneWidth = this.scale.width;
-            const range = 200;
-            const x = Phaser.Math.Between(-range, range) + (sceneWidth * 0.5);
-            const y = this.scale.height + 100;
-            // Corrige: importa Bomb diretamente, não usa require
-            this.foodGroup.add(new Bomb(this, x, y));
+            this.foodGroup.add(new Bomb(this, this.targetCircle));
         } else {
             this.foodGroup.add(new Food(this, this.targetCircle));
         }
