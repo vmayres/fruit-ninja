@@ -19,5 +19,13 @@ export default {
                 frameHeight: 72
             }]
         },
+        fruitPlus: {
+            key: 'fruitPlus',
+            args: ['assets/Fruit+.png', {
+                frameWidth: 16,
+                frameHeight: 16,
+                endFrame: (38 * 6) - 1 // 227
+            }]
+        },
     },
 };
