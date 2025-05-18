@@ -65,6 +65,7 @@ export default class BlueFruit extends Phaser.Physics.Arcade.Sprite
     }
 
     hit() {
+        this.scene.playRandomHitSound();
         let pontos = 10;
         let isCombo = false;
         if (this.scene.isYellowActive) {

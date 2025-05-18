@@ -65,6 +65,7 @@ export default class RedFruit extends Phaser.Physics.Arcade.Sprite
     }
 
     hit() {
+        this.scene.playRandomHitSound();
         // Permite cortar com qualquer cor, mas só faz combo se acertar a cor
         let pontos = 10;
         let isCombo = false;

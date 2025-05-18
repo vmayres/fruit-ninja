@@ -35,6 +35,7 @@ export class Game extends Phaser.Scene
             this.add.image(centerX, centerY, 'bg_big2').setOrigin(0.5).setDepth(-96).setScale(1.5),
         ];
         this.parallaxFactors = [0.08, 0.13, 0.18, 0.23];
+        this.bg_nebula_key = 'bg_nebula';
 
         this.initVariables();
         this.initGameUi();
@@ -50,6 +51,13 @@ export class Game extends Phaser.Scene
                 this.showFreezeText();
             }
         });
+        // Carrega os sons de hit
+        this.hitSounds = [
+            this.sound.add('hit0'),
+            this.sound.add('hit1'),
+            this.sound.add('hit2'),
+            this.sound.add('hit3'),
+        ];
     }
 
     update ()
@@ -66,6 +74,14 @@ export class Game extends Phaser.Scene
             const factor = this.parallaxFactors[i];
             this.bg_parallax[i].x = centerX + dx * 60 * factor * this.scale.width/1280;
             this.bg_parallax[i].y = centerY + dy * 40 * factor * this.scale.height/720;
+        }
+        // Troca o fundo estático conforme estado
+        let desiredKey = 'bg_nebula';
+        if (this.isFreezeActive) desiredKey = 'bg_nebula_blue';
+        if (this.isYellowActive) desiredKey = 'bg_nebula_red';
+        if (this.bg_nebula_key !== desiredKey) {
+            this.bg_nebula.setTexture(desiredKey);
+            this.bg_nebula_key = desiredKey;
         }
         if (!this.gameStarted) return;
         this.drawSlash();
@@ -523,6 +539,13 @@ export class Game extends Phaser.Scene
             fruit._isYellow = true;
         }
         this.foodGroup.add(fruit);
+    }
+
+    playRandomHitSound() {
+        if (this.hitSounds && this.hitSounds.length > 0) {
+            const idx = Phaser.Math.Between(0, this.hitSounds.length - 1);
+            this.hitSounds[idx].play();
+        }
     }
 
     GameOver ()

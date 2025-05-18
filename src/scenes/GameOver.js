@@ -17,10 +17,11 @@ export class GameOver extends Phaser.Scene {
             this.add.image(width/2, height/2, 'bg_big2').setOrigin(0.5).setDepth(-96).setScale(1.5),
         ];
         this.parallaxFactors = [0.08, 0.13, 0.18, 0.23];
+        this.bg_nebula_key = 'bg_nebula';
 
-        this.add.text(width / 2, height / 2, 'Game Over', {
-            fontFamily: 'Monocraft', fontSize: 64, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
+        this.add.text(width / 2, height / 2 - 80, 'Game Over', {
+            fontFamily: 'Monocraft', fontSize: 96, color: '#e74c3c',
+            stroke: '#000000', strokeThickness: 12,
             align: 'center'
         }).setOrigin(0.5);
 
@@ -59,6 +60,14 @@ export class GameOver extends Phaser.Scene {
             const factor = this.parallaxFactors[i];
             this.bg_parallax[i].x = centerX + dx * 60 * factor * this.scale.width/1280;
             this.bg_parallax[i].y = centerY + dy * 40 * factor * this.scale.height/720;
+        }
+        // Troca o fundo estático conforme estado
+        let desiredKey = 'bg_nebula';
+        if (this.isFreezeActive) desiredKey = 'bg_nebula_blue';
+        if (this.isYellowActive) desiredKey = 'bg_nebula_red';
+        if (this.bg_nebula_key !== desiredKey) {
+            this.bg_nebula.setTexture(desiredKey);
+            this.bg_nebula_key = desiredKey;
         }
     }
 }

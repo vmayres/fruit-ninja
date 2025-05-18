@@ -1,10 +1,22 @@
 export default {
-    // 'audio': {
-    //     score: {
-    //         key: 'sound',
-    //         args: ['assets/sound.mp3', 'assets/sound.m4a', 'assets/sound.ogg']
-    //     },
-    // },
+    'audio': {
+        hit0: {
+            key: 'hit0',
+            args: ['assets/hit0.mp3']
+        },
+        hit1: {
+            key: 'hit1',
+            args: ['assets/hit1.mp3']
+        },
+        hit2: {
+            key: 'hit2',
+            args: ['assets/hit2.mp3']
+        },
+        hit3: {
+            key: 'hit3',
+            args: ['assets/hit3.mp3']
+        },
+    },
     'image': {
         bomb: {
             key: 'bomb',

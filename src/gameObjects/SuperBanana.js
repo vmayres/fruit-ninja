@@ -62,6 +62,7 @@ export default class SuperBanana extends Phaser.Physics.Arcade.Sprite
     }
 
     hit() {
+        this.scene.playRandomHitSound();
         this.scene.updateScore(50);
         this.scene.fruitCutProgress();
         this.scene.updateComboText();
