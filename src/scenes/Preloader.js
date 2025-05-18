@@ -38,6 +38,9 @@ export class Preloader extends Phaser.Scene {
                 this.load[type].apply(this.load, args);
             }
         }
+        // Carrega a fonte Monocraft
+        this.load.font('Monocraft', 'assets/Monocraft.ttf', 'truetype');
+        this.load.image('bg_space', 'assets/Background_space.png');
     }
 
     create() {
@@ -45,6 +48,6 @@ export class Preloader extends Phaser.Scene {
         //  For example, you can define global animations here, so we can use them in other scenes.
 
         //  Move to the Game. You could also swap this for a Scene Transition, such as a camera fade.
-        this.scene.start('Game');
+        this.scene.start('Menu');
     }
 }

@@ -21,6 +21,11 @@ export class Game extends Phaser.Scene
 
     create ()
     {
+        this.add.image(this.scale.width/2, this.scale.height/2, 'bg_space')
+            .setOrigin(0.5)
+            .setDepth(-100)
+            .setScale(1.5);
+
         this.initVariables();
         this.initGameUi();
         // this.initAnimations();
@@ -116,7 +121,7 @@ export class Game extends Phaser.Scene
 
         // Vidas (esquerda)
         this.livesText = this.add.text(spacing * 0 + spacing / 2, y, 'Vidas: 3', {
-            fontFamily: 'Arial Black', fontSize: 28, color: '#ff5555',
+            fontFamily: 'Monocraft', fontSize: 28, color: '#ff5555',
             stroke: '#000000', strokeThickness: 8,
         })
             .setOrigin(0.5, 0)
@@ -124,7 +129,7 @@ export class Game extends Phaser.Scene
 
         // Pontuação (centro)
         this.scoreText = this.add.text(spacing * 1 + spacing / 2, y, 'Pontuação: 0', {
-            fontFamily: 'Arial Black', fontSize: 28, color: '#ffffff',
+            fontFamily: 'Monocraft', fontSize: 28, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
         })
             .setOrigin(0.5, 0)
@@ -132,13 +137,13 @@ export class Game extends Phaser.Scene
 
         // Combo (direita)
         this.comboText = this.add.text(spacing * 2 + spacing / 2, y, 'ComboMeter = 1.0x', {
-            fontFamily: 'Arial Black', fontSize: 28, color: '#ffe066',
+            fontFamily: 'Monocraft', fontSize: 28, color: '#ffe066',
             stroke: '#000000', strokeThickness: 8,
         }).setOrigin(0.5, 0).setDepth(100);
 
         // Texto tutorial central
         this.tutorialText = this.add.text(this.centreX, this.centreY, 'Tap to start!', {
-            fontFamily: 'Arial Black', fontSize: 42, color: '#ffffff',
+            fontFamily: 'Monocraft', fontSize: 42, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
         })
@@ -147,7 +152,7 @@ export class Game extends Phaser.Scene
 
         // Texto Game Over
         this.gameOverText = this.add.text(this.scale.width * 0.5, this.scale.height * 0.5, 'Game Over', {
-            fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',
+            fontFamily: 'Monocraft', fontSize: 64, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
         })
@@ -402,7 +407,7 @@ export class Game extends Phaser.Scene
             this.scale.height / 2,
             'FREEZE',
             {
-                fontFamily: 'Arial Black',
+                fontFamily: 'Monocraft',
                 fontSize: 96,
                 color: '#3498db',
                 stroke: '#000',
@@ -445,7 +450,7 @@ export class Game extends Phaser.Scene
             this.scale.height / 2,
             'GOLD TIME',
             {
-                fontFamily: 'Arial Black',
+                fontFamily: 'Monocraft',
                 fontSize: 96,
                 color: '#fff200',
                 stroke: '#000',
