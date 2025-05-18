@@ -3,7 +3,7 @@ export class GameOver extends Phaser.Scene {
         super('GameOver');
     }
 
-    create() {
+    create(data) {
         const { width, height } = this.scale;
         // Parallax backgrounds
         this.bg_nebula = this.add.image(width/2, height/2, 'bg_nebula')
@@ -22,6 +22,12 @@ export class GameOver extends Phaser.Scene {
         this.add.text(width / 2, height / 2 - 80, 'Game Over', {
             fontFamily: 'Monocraft', fontSize: 96, color: '#e74c3c',
             stroke: '#000000', strokeThickness: 12,
+            align: 'center'
+        }).setOrigin(0.5);
+        // Exibe a pontuação final
+        this.add.text(width / 2, height / 2 + 10, `Pontuação: ${data && data.score !== undefined ? data.score : 0}`, {
+            fontFamily: 'Monocraft', fontSize: 48, color: '#fff',
+            stroke: '#000', strokeThickness: 8,
             align: 'center'
         }).setOrigin(0.5);
 

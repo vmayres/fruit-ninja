@@ -81,12 +81,14 @@ export default class BlueFruit extends Phaser.Physics.Arcade.Sprite
                 this.scene.comboMeter = parseFloat((this.scene.comboMeter + 0.1).toFixed(1));
                 this.scene.comboSequenceCount++;
             } else {
+                this.scene.score = Math.round(this.scene.score * this.scene.comboMeter);
                 pontos = Math.round(pontos * this.scene.comboMeter);
                 this.scene.comboMeter = 1.0;
                 this.scene.comboSequenceColor = null;
                 this.scene.comboSequenceCount = 0;
             }
         } else {
+            this.scene.score = Math.round(this.scene.score * this.scene.comboMeter);
             pontos = Math.round(pontos * this.scene.comboMeter);
             this.scene.comboMeter = 1.0;
             this.scene.comboSequenceColor = null;

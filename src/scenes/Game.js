@@ -58,6 +58,39 @@ export class Game extends Phaser.Scene
             this.sound.add('hit2'),
             this.sound.add('hit3'),
         ];
+
+        // Timer de início
+        if (this.tutorialText) this.tutorialText.destroy(); // Garante que não existe texto antigo
+        if (this.countdownText) this.countdownText.destroy(); // Garante que não existe texto antigo
+        this.startCountdown();
+    }
+
+    startCountdown() {
+        this.countdownValue = 3;
+        if (this.countdownText) this.countdownText.destroy();
+        this.countdownText = this.add.text(this.centreX, this.centreY, '', {
+            fontFamily: 'Monocraft', fontSize: 96, color: '#fff',
+            stroke: '#000', strokeThickness: 10,
+            align: 'center'
+        }).setOrigin(0.5).setDepth(1000);
+        this.countdownText.setText(this.countdownValue);
+        this.countdownText.setVisible(true);
+        this.countdownTimer = this.time.addEvent({
+            delay: 1000,
+            repeat: 3,
+            callback: () => {
+                this.countdownValue--;
+                if (this.countdownValue > 0) {
+                    this.countdownText.setText(this.countdownValue);
+                } else if (this.countdownValue === 0) {
+                    this.countdownText.setText('VAI!!!');
+                } else {
+                    this.countdownText.setVisible(false);
+                    this.countdownTimer.remove();
+                    this.startGame();
+                }
+            }
+        });
     }
 
     update ()
@@ -114,8 +147,9 @@ export class Game extends Phaser.Scene
 
     initVariables ()
     {
+        // Reinicializa variáveis ao entrar na cena
         this.score = 0;
-        this.lives = 3; // Adiciona vidas
+        this.lives = 3;
         this.centreX = this.scale.width * 0.5;
         this.centreY = this.scale.height * 0.5;
         this.trailPoints = [];
@@ -150,6 +184,12 @@ export class Game extends Phaser.Scene
 
         this.isFreezeActive = false;
         this.freezeTimer = null;
+        this.isYellowActive = false;
+        this.yellowTimer = null;
+        this.goldText = null;
+        this.freezeText = null;
+        this.gameStarted = false;
+        this.foodGroup = null;
     }
 
     initGameUi ()
@@ -233,18 +273,11 @@ export class Game extends Phaser.Scene
 
     initInput ()
     {
-        this.input.on('pointermove', (pointer) =>
-        {
-            // if (this.trailPoints.length > 4)
-            // {
-            //     const trailPoint = this.trailPoints[ this.trailPoints.length - 1 ];
-            //     this.trailLines.push(new Phaser.Geom.Line(trailPoint.x, trailPoint.y, pointer.x, pointer.y));
-            // }
-            // create a new TrailPoint class and add it to the trailPoints array
+        // Remove pointerdown para iniciar o jogo automaticamente
+        this.input.on('pointermove', (pointer) => {
             this.trailPoints.push(new TrailPoint(pointer.x, pointer.y, this.trailDuration * 60));
             this.trailCurve.addPoint(pointer.x, pointer.y);
         });
-
         // Troca de cor do cursor com as teclas 1, 2, 3 (R G B), mas bloqueia durante GOLD TIME
         this.input.keyboard.on('keydown-ONE', () => {
             if (this.isYellowActive) return;
@@ -261,16 +294,6 @@ export class Game extends Phaser.Scene
             this.cursorColorIndex = 2; // Blue
             this.cursorColor = this.cursorColors[this.cursorColorIndex];
         });
-
-        // pointerdown once event
-        this.input.once('pointerdown', () =>
-        {
-            if (!this.gameStarted)
-            {
-                this.startGame();
-            }
-        });
-
         // phaser time loop
         // this.time.addEvent({
         //     delay: 1000,
@@ -321,7 +344,7 @@ export class Game extends Phaser.Scene
     startGame ()
     {
         this.gameStarted = true;
-        this.tutorialText.setVisible(false);
+        if (this.countdownText) this.countdownText.setVisible(false);
         this.addFoodWave();
     }
 
@@ -550,6 +573,6 @@ export class Game extends Phaser.Scene
 
     GameOver ()
     {
-        this.scene.start('GameOver');
+        this.scene.start('GameOver', { score: this.score });
     }
 }
