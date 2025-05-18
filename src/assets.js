@@ -12,13 +12,6 @@ export default {
         },
     },
     'spritesheet': {
-        tiles: {
-            key: 'tiles',
-            args: ['assets/tiles.png', {
-                frameWidth: 72,
-                frameHeight: 72
-            }]
-        },
         fruitPlus: {
             key: 'fruitPlus',
             args: ['assets/Fruit+.png', {

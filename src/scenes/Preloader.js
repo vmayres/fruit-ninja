@@ -41,6 +41,11 @@ export class Preloader extends Phaser.Scene {
         // Carrega a fonte Monocraft
         this.load.font('Monocraft', 'assets/Monocraft.ttf', 'truetype');
         this.load.image('bg_space', 'assets/Background_space.png');
+        this.load.image('bg_nebula', 'assets/Dynamic Space Background FREE/Nebula Aqua-Pink.png');
+        this.load.image('bg_stars1', 'assets/Dynamic Space Background FREE/Stars Small_1.png');
+        this.load.image('bg_stars2', 'assets/Dynamic Space Background FREE/Stars Small_2.png');
+        this.load.image('bg_big1', 'assets/Dynamic Space Background FREE/Stars-Big_1_1_PC.png');
+        this.load.image('bg_big2', 'assets/Dynamic Space Background FREE/Stars-Big_1_2_PC.png');
     }
 
     create() {
