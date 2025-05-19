@@ -32,5 +32,13 @@ export default {
                 endFrame: (38 * 6) - 1 // 227
             }]
         },
+        splashRGB: {
+            key: 'splashRGB',
+            args: ['assets/SplashesRGB.png', {
+                frameWidth: 32,
+                frameHeight: 32,
+                endFrame: 2
+            }]
+        },
     },
 };

@@ -612,6 +612,31 @@ export class Game extends Phaser.Scene
         this.paintDrops.push(drop);
     }
 
+    // Adiciona splash de tinta no fundo
+    addSplash(x, y, colorIndex) {
+        if (!this.splashes) {
+            this.splashes = [];
+        }
+        const splashCount = Phaser.Math.Between(1, 3);
+        for (let i = 0; i < splashCount; i++) {
+            const angle = Phaser.Math.FloatBetween(0, Math.PI * 2);
+            const dist = Phaser.Math.Between(0, 100);
+            const sx = x + Math.cos(angle) * dist;
+            const sy = y + Math.sin(angle) * dist;
+            // Splash fica acima do parallax, mas abaixo das frutas (depth -95)
+            const splash = this.add.sprite(sx, sy, 'splashRGB', colorIndex)
+                .setOrigin(0.5)
+                .setScale(Phaser.Math.FloatBetween(1.1, 1.7))
+                .setAlpha(0.7)
+                .setDepth(-95);
+            this.splashes.push(splash);
+            // Splash permanece por 60 segundos
+            this.time.delayedCall(60000, () => {
+                if (splash && splash.active) splash.destroy();
+            });
+        }
+    }
+
     GameOver ()
     {
         this.scene.start('GameOver', { score: this.score });

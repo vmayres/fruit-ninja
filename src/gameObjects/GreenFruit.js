@@ -65,6 +65,10 @@ export default class GreenFruit extends Phaser.Physics.Arcade.Sprite
 
     hit() {
         this.scene.playRandomHitSound();
+        // Splash de tinta verde
+        if (this.scene.addSplash) {
+            this.scene.addSplash(this.x, this.y, 1);
+        }
         let pontos = 10;
         let isCombo = false;
         if (this.scene.isYellowActive) {
