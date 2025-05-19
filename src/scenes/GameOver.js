@@ -1,10 +1,14 @@
-export class GameOver extends Phaser.Scene {
-    constructor() {
+export class GameOver extends Phaser.Scene 
+{
+    constructor() 
+    {
         super('GameOver');
     }
 
-    create(data) {
+    create(data) 
+    {
         const { width, height } = this.scale;
+
         // Parallax backgrounds
         this.bg_nebula = this.add.image(width/2, height/2, 'bg_nebula')
             .setOrigin(0.5)
@@ -24,6 +28,7 @@ export class GameOver extends Phaser.Scene {
             stroke: '#000000', strokeThickness: 12,
             align: 'center'
         }).setOrigin(0.5);
+
         // Exibe a pontuação final
         this.add.text(width / 2, height / 2 + 10, `Pontuação: ${data && data.score !== undefined ? data.score : 0}`, {
             fontFamily: 'Monocraft', fontSize: 48, color: '#fff',
@@ -41,6 +46,7 @@ export class GameOver extends Phaser.Scene {
         menuBtn.on('pointerdown', () => {
             this.scene.start('Menu');
         });
+
         // Botão REINICIAR
         const restartBtn = this.add.text(this.scale.width / 2, this.scale.height / 2 + 180, 'REINICIAR', {
             fontFamily: 'Monocraft', fontSize: 40, color: '#2ecc40',
@@ -53,8 +59,9 @@ export class GameOver extends Phaser.Scene {
         });
     }
 
-    update() {
-        // Parallax effect: move layers based on mouse position
+    update() 
+    {
+        // Efeito Paralax: usa o centro da tela como fonto de fulga em relao ao ponteiro do mouse
         const pointer = this.input.activePointer;
         const centerX = this.scale.width / 2;
         const centerY = this.scale.height / 2;
@@ -66,14 +73,6 @@ export class GameOver extends Phaser.Scene {
             const factor = this.parallaxFactors[i];
             this.bg_parallax[i].x = centerX + dx * 60 * factor * this.scale.width/1280;
             this.bg_parallax[i].y = centerY + dy * 40 * factor * this.scale.height/720;
-        }
-        // Troca o fundo estático conforme estado
-        let desiredKey = 'bg_nebula';
-        if (this.isFreezeActive) desiredKey = 'bg_nebula_blue';
-        if (this.isYellowActive) desiredKey = 'bg_nebula_red';
-        if (this.bg_nebula_key !== desiredKey) {
-            this.bg_nebula.setTexture(desiredKey);
-            this.bg_nebula_key = desiredKey;
         }
     }
 }

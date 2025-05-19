@@ -2,7 +2,9 @@ import ASSETS from '../assets.js';
 
 export default class Bomb extends Phaser.Physics.Arcade.Sprite
 {
-    constructor(scene, targetCircle) {
+    constructor(scene, targetCircle) 
+    {
+        // Define posição inicial e velocidade aleatória
         const sceneWidth = scene.scale.width;
         const sceneHeight = scene.scale.height;
         const targetPoint = targetCircle.getRandomPoint();
@@ -10,9 +12,9 @@ export default class Bomb extends Phaser.Physics.Arcade.Sprite
         const range = 200;
         const x = Phaser.Math.Between(-range, range) + (sceneWidth * 0.5);
 
+        // Inicializa o sprite da bomba (frame 136 do spritesheet)
         super(scene, x, sceneHeight + 100, ASSETS.spritesheet.fruitPlus.key, 136);
-        
-        this.setScale(72/16);
+        this.setScale(72/16); // Ajuste de escala do sprite
         this.radius = (this.width * 0.5) * (72/16);
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -20,18 +22,21 @@ export default class Bomb extends Phaser.Physics.Arcade.Sprite
         this.setCircle(this.radius);
         this.setAngularVelocity(Phaser.Math.Between(-300, 300));
         this.scene = scene;
-        this.setDepth(90);
+        this.setDepth(90); // Garante que a bomba fique acima dos splashes
     }
 
+    // Atualiza a bomba a cada frame
     preUpdate (time, delta)
     {
         super.preUpdate(time, delta);
+        // Remove a bomba se sair da tela
         if (this.y > this.scene.scale.height + this.height && this.body.velocity.y > 0)
         {
             this.scene.removeFood(this);
         }
     }
 
+    // Verifica colisão com o rastro do mouse
     checkCollision (points)
     {
         for (let i = 0; i < points.length; i++)
@@ -52,10 +57,11 @@ export default class Bomb extends Phaser.Physics.Arcade.Sprite
         }
     }
 
+    // Processa o corte da bomba
     hit() {
-        this.scene.playRandomHitSound();
-        this.scene.updateLives(-3); // Perde 2 vidas ao cortar
-        this.scene.removeItem(this);
+        this.scene.playRandomHitSound(); // Toca o som de corte
+        this.scene.updateLives(-3);      // Perde 3 vidas ao cortar a bomba
+        this.scene.removeItem(this);     // Remove a bomba da cena
     }
 
 }

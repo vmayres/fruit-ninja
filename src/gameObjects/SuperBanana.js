@@ -4,6 +4,7 @@ export default class SuperBanana extends Phaser.Physics.Arcade.Sprite
 {
     constructor(scene, targetCircle) 
     {
+        // Define posição inicial e velocidade aleatória
         const sceneWidth = scene.scale.width;
         const sceneHeight = scene.scale.height;
         const targetPoint = targetCircle.getRandomPoint();
@@ -11,10 +12,9 @@ export default class SuperBanana extends Phaser.Physics.Arcade.Sprite
         const range = 200;
         const x = Phaser.Math.Between(- range, range) + (sceneWidth * 0.5);
 
-        // Corrige o id do frame para 159 (SuperBanana)
+        // Frame 159 do spritesheet representa a SuperBanana
         super(scene, x, sceneHeight + 100, ASSETS.spritesheet.fruitPlus.key, 159);
-        
-        this.setScale(72/16);
+        this.setScale(72/16); // Ajuste de escala do sprite
         this.radius = (this.width * 0.5) * (72/16);
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -22,11 +22,11 @@ export default class SuperBanana extends Phaser.Physics.Arcade.Sprite
         this.body.setCircle(this.radius);
         this.setAngularVelocity(Phaser.Math.Between(-300, 300));
         this.scene = scene;
-        this.setDepth(90);
-
+        this.setDepth(90); // Garante que fique acima dos splashes
         this._originalVelocity = null;
     }
 
+    // Atualiza a SuperBanana a cada frame
     preUpdate (time, delta)
     {
         super.preUpdate(time, delta);
@@ -34,6 +34,7 @@ export default class SuperBanana extends Phaser.Physics.Arcade.Sprite
         if (!this._originalVelocity && this.body && (this.body.velocity.x !== 0 || this.body.velocity.y !== 0)) {
             this._originalVelocity = { x: this.body.velocity.x, y: this.body.velocity.y };
         }
+        // Remove a SuperBanana se sair da tela
         if (this.y > this.scene.scale.height + this.height && this.body.velocity.y > 0)
         {
             this.scene.updateLives(-1);
@@ -41,6 +42,7 @@ export default class SuperBanana extends Phaser.Physics.Arcade.Sprite
         }
     }
 
+    // Verifica colisão com o rastro do mouse
     checkCollision (points)
     {
         for (let i = 0; i < points.length; i++)
@@ -51,7 +53,6 @@ export default class SuperBanana extends Phaser.Physics.Arcade.Sprite
             {
                 var dx = (this.x - x) * (this.x - x);
                 var dy = (this.y - y) * (this.y - y);
-
                 if ((dx + dy) <= (this.body.radius * this.body.radius))
                 {
                     this.hit();
@@ -61,11 +62,17 @@ export default class SuperBanana extends Phaser.Physics.Arcade.Sprite
         }
     }
 
+    // Processa o corte da SuperBanana
     hit() {
+        // Toca o som de corte
         this.scene.playRandomHitSound();
+
+        // Garante pontuação fixa ao cortar a SuperBanana
         this.scene.updateScore(50);
         this.scene.fruitCutProgress();
         this.scene.updateComboText();
+        
+        // Ativa o efeito especial GOLD TIME
         this.scene.onSuperBananaCut(this);
     }
 }

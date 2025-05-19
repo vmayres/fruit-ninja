@@ -1,4 +1,5 @@
 export default {
+    // Carrega os audios que seram usados no jogo
     'audio': {
         hit0: {
             key: 'hit0',
@@ -17,12 +18,14 @@ export default {
             args: ['assets/hit3.mp3']
         },
     },
+    //carrega as imagem do jogo
     'image': {
         bomb: {
             key: 'bomb',
             args: ['assets/bomb.png']
         },
     },
+    //carrega os spritesheets
     'spritesheet': {
         fruitPlus: {
             key: 'fruitPlus',

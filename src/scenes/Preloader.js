@@ -38,7 +38,8 @@ export class Preloader extends Phaser.Scene {
                 this.load[type].apply(this.load, args);
             }
         }
-        // Carrega a fonte Monocraft
+
+        //Load image and fonts (Pode ser feito no Boot.js)
         this.load.font('Monocraft', 'assets/Monocraft.ttf', 'truetype');
         this.load.image('bg_nebula', 'assets/Dynamic Space Background FREE/Nebula Aqua-Pink.png');
         this.load.image('bg_nebula_blue', 'assets/Dynamic Space Background FREE/Nebula Blue.png');
@@ -47,15 +48,12 @@ export class Preloader extends Phaser.Scene {
         this.load.image('bg_stars2', 'assets/Dynamic Space Background FREE/Stars Small_2.png');
         this.load.image('bg_big1', 'assets/Dynamic Space Background FREE/Stars-Big_1_1_PC.png');
         this.load.image('bg_big2', 'assets/Dynamic Space Background FREE/Stars-Big_1_2_PC.png');
-        this.load.image('gem_teste', 'assets/teste.png');
+        this.load.image('controles', 'assets/teste.png');
         this.load.image('logo', 'assets/logo.png');
     }
 
     create() {
-        //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
-        //  For example, you can define global animations here, so we can use them in other scenes.
-
-        //  Move to the Game. You could also swap this for a Scene Transition, such as a camera fade.
+        // Vai para a primeira cena do jogo
         this.scene.start('Menu');
     }
 }

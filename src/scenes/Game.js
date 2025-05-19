@@ -1,9 +1,3 @@
-/*
-* Asset from: https://kenney.nl/assets/pixel-platformer
-*
-*/
-import ASSETS from '../assets.js';
-import ANIMATION from '../animation.js';
 import TrailPoint from '../gameObjects/TrailPoint.js';
 import Bomb from '../gameObjects/Bomb.js';
 import RedFruit from '../gameObjects/RedFruit.js';
@@ -39,10 +33,9 @@ export class Game extends Phaser.Scene
 
         this.initVariables();
         this.initGameUi();
-        // this.initAnimations();
-        // this.initPlayer();
         this.initInput();
         this.initPhysics();
+
         // Input para resetar barra e mostrar texto
         this.input.keyboard.on('keydown-SPACE', () => {
             if (this.fruitCutCount >= this.barFruitsGoal) {
@@ -51,6 +44,7 @@ export class Game extends Phaser.Scene
                 this.showFreezeText();
             }
         });
+
         // Carrega os sons de hit
         this.hitSounds = [
             this.sound.add('hit0'),
@@ -59,15 +53,17 @@ export class Game extends Phaser.Scene
             this.sound.add('hit3'),
         ];
 
-        // Timer de início
-        if (this.tutorialText) this.tutorialText.destroy(); // Garante que não existe texto antigo
-        if (this.countdownText) this.countdownText.destroy(); // Garante que não existe texto antigo
         this.startCountdown();
     }
 
-    startCountdown() {
+    startCountdown() 
+    {
         this.countdownValue = 3;
-        if (this.countdownText) this.countdownText.destroy();
+
+        if (this.countdownText) {
+            this.countdownText.destroy();
+        }
+            
         this.countdownText = this.add.text(this.centreX, this.centreY, '', {
             fontFamily: 'Monocraft', fontSize: 96, color: '#fff',
             stroke: '#000', strokeThickness: 10,
@@ -95,7 +91,7 @@ export class Game extends Phaser.Scene
 
     update ()
     {
-        // Parallax effect: move layers based on mouse position
+        // Efeito Paralax: usa o centro da tela como fonto de fulga em relao ao ponteiro do mouse
         const pointer = this.input.activePointer;
         const centerX = this.scale.width / 2;
         const centerY = this.scale.height / 2;
@@ -108,17 +104,20 @@ export class Game extends Phaser.Scene
             this.bg_parallax[i].x = centerX + dx * 60 * factor * this.scale.width/1280;
             this.bg_parallax[i].y = centerY + dy * 40 * factor * this.scale.height/720;
         }
-        // Troca o fundo estático conforme estado
-        let desiredKey = 'bg_nebula';
-        if (this.isFreezeActive) desiredKey = 'bg_nebula_blue';
-        if (this.isYellowActive) desiredKey = 'bg_nebula_red';
-        if (this.bg_nebula_key !== desiredKey) {
-            this.bg_nebula.setTexture(desiredKey);
-            this.bg_nebula_key = desiredKey;
+
+        // Troca o fundo estático conforme estado (Frezze and gold Time)
+        let bg_key = 'bg_nebula';
+        if (this.isFreezeActive) bg_key = 'bg_nebula_blue';
+        if (this.isYellowActive) bg_key = 'bg_nebula_red';
+        if (this.bg_nebula_key !== bg_key) {
+            this.bg_nebula.setTexture(bg_key);
+            this.bg_nebula_key = bg_key;
         }
+
         if (!this.gameStarted) return;
         this.drawSlash();
         this.checkCollisions();
+
         // Aplica efeito freeze frame a frame
         if (this.isFreezeActive) {
             this.foodGroup.getChildren().forEach(obj => {
@@ -143,6 +142,7 @@ export class Game extends Phaser.Scene
                 }
             });
         }
+
         // Efeito de gotas de tinta caindo do trail
         if (this.gameStarted) {
             this.paintDropTimer += this.game.loop.delta;
@@ -190,7 +190,6 @@ export class Game extends Phaser.Scene
         // Combo meter
         this.comboMeter = 1.0;
         this.comboSequenceColor = null;
-        this.comboSequenceCount = 0;
         // Texto do combo
         this.comboText = null;
 
@@ -244,25 +243,6 @@ export class Game extends Phaser.Scene
             stroke: '#000000', strokeThickness: 8,
         }).setOrigin(0.5, 0).setDepth(100);
 
-        // Texto tutorial central
-        this.tutorialText = this.add.text(this.centreX, this.centreY, 'Tap to start!', {
-            fontFamily: 'Monocraft', fontSize: 42, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        })
-            .setOrigin(0.5)
-            .setDepth(100);
-
-        // Texto Game Over
-        this.gameOverText = this.add.text(this.scale.width * 0.5, this.scale.height * 0.5, 'Game Over', {
-            fontFamily: 'Monocraft', fontSize: 64, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        })
-            .setOrigin(0.5)
-            .setDepth(100)
-            .setVisible(false);
-
         // Barra azul central inferior
         const barX = (this.scale.width - this.barMaxWidth) / 2;
         const barY = this.scale.height - 60;
@@ -271,16 +251,6 @@ export class Game extends Phaser.Scene
         this.barGraphics.x = barX;
         this.barGraphics.y = barY;
         this.drawProgressBar();
-    }
-
-    initAnimations ()
-    {
-        // this.anims.create({
-        //     key: ANIMATION.explosion.key,
-        //     frames: this.anims.generateFrameNumbers(ANIMATION.explosion.texture, ANIMATION.explosion.config),
-        //     frameRate: ANIMATION.explosion.frameRate,
-        //     repeat: ANIMATION.explosion.repeat
-        // });
     }
 
     initPhysics ()
@@ -302,6 +272,7 @@ export class Game extends Phaser.Scene
             this.trailPoints.push(new TrailPoint(pointer.x, pointer.y, this.trailDuration * 60));
             this.trailCurve.addPoint(pointer.x, pointer.y);
         });
+
         // Troca de cor do cursor com as teclas 1, 2, 3 (R G B), mas bloqueia durante GOLD TIME
         this.input.keyboard.on('keydown-ONE', () => {
             if (this.isYellowActive) return;
@@ -318,18 +289,13 @@ export class Game extends Phaser.Scene
             this.cursorColorIndex = 2; // Blue
             this.cursorColor = this.cursorColors[this.cursorColorIndex];
         });
-        // phaser time loop
-        // this.time.addEvent({
-        //     delay: 1000,
-        //     callback: this.addFood,
-        //     callbackScope: this,
-        //     loop: true
-        // });
+
     }
 
     drawSlash ()
     {
         this.trailGraphics.clear();
+
         // Iterate through the trailPoints array and draw a line between each point
         for (let i = 0; i < this.trailPoints.length; i++)
         {
@@ -420,18 +386,9 @@ export class Game extends Phaser.Scene
         }
     }
 
-    removeItem(item) {
+    removeItem(item) 
+    {
         this.foodGroup.remove(item, true, true);
-    }
-
-    addExplosion (x, y)
-    {
-        new Explosion(this, x, y);
-    }
-
-    sliceFruit ()
-    {
-
     }
 
     updateScore (points)
@@ -440,10 +397,12 @@ export class Game extends Phaser.Scene
         this.scoreText.setText(`Score: ${this.score}`);
     }
 
-    fruitCutProgress() {
+    fruitCutProgress() 
+    {
         this.fruitCutCount++;
         this.updateProgressBar();
-        if (this.fruitCutCount >= this.barFruitsGoal) {
+        if (this.fruitCutCount >= this.barFruitsGoal) 
+        {
             this.barCurrentWidth = this.barMaxWidth;
             this.drawProgressBar();
         }
@@ -466,12 +425,15 @@ export class Game extends Phaser.Scene
     drawProgressBar() 
     {
         this.barGraphics.clear();
+        
         // Fundo da barra (cinza)
         this.barGraphics.fillStyle(0x222f3e, 0.5);
         this.barGraphics.fillRect(0, 0, this.barMaxWidth, this.barHeight);
+
         // Barra azul
         this.barGraphics.fillStyle(0x3498db, 1);
         this.barGraphics.fillRect(0, 0, this.barCurrentWidth, this.barHeight);
+
         // Borda
         this.barGraphics.lineStyle(3, 0xffffff, 1);
         this.barGraphics.strokeRect(0, 0, this.barMaxWidth, this.barHeight);
@@ -520,6 +482,7 @@ export class Game extends Phaser.Scene
     onSuperBananaCut(superBanana) 
     {
         this.removeFood(superBanana);
+
         // Aplica o tint amarelo em todas as frutas e no cursor
         this.isYellowActive = true;
         this.foodGroup.getChildren().forEach(obj => {
@@ -527,6 +490,7 @@ export class Game extends Phaser.Scene
             obj._isYellow = true;
         });
         this.cursorColor = 0xfff200;
+
         // Exibe texto GOLD TIME
         if (this.goldText && this.goldText.active) {
             this.goldText.destroy();
@@ -554,13 +518,15 @@ export class Game extends Phaser.Scene
                 if (obj.clearTint) obj.clearTint();
                 obj._isYellow = false;
             });
+
             // Restaura cor do cursor
             this.cursorColor = this.cursorColors[this.cursorColorIndex];
         });
     }
 
     // Garante que novas frutas recebam o tint amarelo durante GOLD TIME
-    addFood() {
+    addFood() 
+    {
         // 10% chance de ser bomba
         if (Phaser.Math.FloatBetween(0, 1) < 0.10) {
             const bomb = new Bomb(this, this.targetCircle);
@@ -588,14 +554,16 @@ export class Game extends Phaser.Scene
         this.foodGroup.add(fruit);
     }
 
-    playRandomHitSound() {
+    playRandomHitSound() 
+    {
         if (this.hitSounds && this.hitSounds.length > 0) {
             const idx = Phaser.Math.Between(0, this.hitSounds.length - 1);
             this.hitSounds[idx].play();
         }
     }
 
-    spawnPaintDrop(x, y, color) {
+    spawnPaintDrop(x, y, color) 
+    {
         let drop;
         if (this.paintDropPool.length > 0) {
             drop = this.paintDropPool.pop();
@@ -613,10 +581,12 @@ export class Game extends Phaser.Scene
     }
 
     // Adiciona splash de tinta no fundo
-    addSplash(x, y, colorIndex) {
+    addSplash(x, y, colorIndex) 
+    {
         if (!this.splashes) {
             this.splashes = [];
         }
+
         const splashCount = Phaser.Math.Between(1, 3);
         for (let i = 0; i < splashCount; i++) {
             const angle = Phaser.Math.FloatBetween(0, Math.PI * 2);

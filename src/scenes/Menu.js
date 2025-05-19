@@ -48,8 +48,9 @@ export class Menu extends Phaser.Scene {
         });
     }
 
-    update() {
-        // Parallax effect: move layers based on mouse position
+    update() 
+    {
+        // Efeito Paralax: usa o centro da tela como fonto de fulga em relao ao ponteiro do mouse
         const pointer = this.input.activePointer;
         const centerX = this.scale.width / 2;
         const centerY = this.scale.height / 2;
