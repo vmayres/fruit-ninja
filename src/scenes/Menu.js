@@ -20,14 +20,15 @@ export class Menu extends Phaser.Scene {
         this.parallaxFactors = [0.08, 0.13, 0.18, 0.23];
         this.bg_nebula_key = 'bg_nebula';
 
-        // Textos e botões
-        this.add.text(centerX, centerY - 100, 'Fruit Ninja', {
-            fontFamily: 'Monocraft', fontSize: 64, color: '#fff',
-            stroke: '#000', strokeThickness: 8,
-        }).setOrigin(0.5);
+        // LOGO no topo (menor e mais para cima)
+        const logo = this.add.image(centerX, centerY - 260, 'logo')
+            .setOrigin(0.5, 0)
+            .setScale(0.45);
 
-        // Botão JOGAR
-        const playBtn = this.add.text(centerX, centerY, 'JOGAR', {
+        // Botões centralizados embaixo da logo, um embaixo do outro
+        const btnY = centerY - 260 + logo.displayHeight + 60;
+        const btnSpacing = 40;
+        const playBtn = this.add.text(centerX, btnY, 'JOGAR', {
             fontFamily: 'Monocraft', fontSize: 48, color: '#2ecc40',
             stroke: '#000', strokeThickness: 6,
             backgroundColor: '#222f3e',
@@ -36,9 +37,7 @@ export class Menu extends Phaser.Scene {
         playBtn.on('pointerdown', () => {
             this.scene.start('Game');
         });
-
-        // Botão CONTROLES
-        const controlsBtn = this.add.text(centerX, centerY + 100, 'CONTROLES', {
+        const controlsBtn = this.add.text(centerX, btnY + playBtn.displayHeight + btnSpacing, 'CONTROLES', {
             fontFamily: 'Monocraft', fontSize: 48, color: '#3498db',
             stroke: '#000', strokeThickness: 6,
             backgroundColor: '#222f3e',

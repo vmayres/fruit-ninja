@@ -20,25 +20,19 @@ export class Controles extends Phaser.Scene {
         this.parallaxFactors = [0.08, 0.13, 0.18, 0.23];
         this.bg_nebula_key = 'bg_nebula';
 
-        // Textos e botões
-        this.add.text(centerX, centerY - 100, 'Controles', {
-            fontFamily: 'Monocraft', fontSize: 54, color: '#fff',
-            stroke: '#000', strokeThickness: 8,
-        }).setOrigin(0.5);
+        // Adiciona a gema por cima do parallax
+        this.gem = this.add.image(centerX, centerY, 'gem_teste')
+            .setOrigin(0.5)
+            .setDepth(10)
+            .setScale(1);
 
-        this.add.text(centerX, centerY, '1: Vermelho\n2: Verde\n3: Azul\nCorte as frutas com a cor certa!\nSuperBanana: qualquer cor', {
-            fontFamily: 'Monocraft', fontSize: 32, color: '#ffe066',
+        // Botão VOLTAR no canto superior esquerdo, metade do tamanho
+        const backBtn = this.add.text(30, 30, 'VOLTAR', {
+            fontFamily: 'Monocraft', fontSize: 24, color: '#e74c3c',
             stroke: '#000', strokeThickness: 4,
-            align: 'center'
-        }).setOrigin(0.5);
-
-        // Botão VOLTAR
-        const backBtn = this.add.text(centerX, centerY + 150, 'VOLTAR', {
-            fontFamily: 'Monocraft', fontSize: 40, color: '#e74c3c',
-            stroke: '#000', strokeThickness: 6,
             backgroundColor: '#222f3e',
-            padding: { left: 30, right: 30, top: 10, bottom: 10 }
-        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+            padding: { left: 16, right: 16, top: 6, bottom: 6 }
+        }).setOrigin(0, 0).setInteractive({ useHandCursor: true });
         backBtn.on('pointerdown', () => {
             this.scene.start('Menu');
         });
@@ -58,13 +52,10 @@ export class Controles extends Phaser.Scene {
             this.bg_parallax[i].x = centerX + dx * 60 * factor * this.scale.width/1280;
             this.bg_parallax[i].y = centerY + dy * 40 * factor * this.scale.height/720;
         }
-        // Troca o fundo estático conforme estado
-        let desiredKey = 'bg_nebula';
-        if (this.isFreezeActive) desiredKey = 'bg_nebula_blue';
-        if (this.isYellowActive) desiredKey = 'bg_nebula_red';
-        if (this.bg_nebula_key !== desiredKey) {
-            this.bg_nebula.setTexture(desiredKey);
-            this.bg_nebula_key = desiredKey;
+        // Mantém a gema centralizada
+        if (this.gem) {
+            this.gem.x = centerX;
+            this.gem.y = centerY;
         }
     }
 }

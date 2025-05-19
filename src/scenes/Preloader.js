@@ -47,6 +47,8 @@ export class Preloader extends Phaser.Scene {
         this.load.image('bg_stars2', 'assets/Dynamic Space Background FREE/Stars Small_2.png');
         this.load.image('bg_big1', 'assets/Dynamic Space Background FREE/Stars-Big_1_1_PC.png');
         this.load.image('bg_big2', 'assets/Dynamic Space Background FREE/Stars-Big_1_2_PC.png');
+        this.load.image('gem_teste', 'assets/teste.png');
+        this.load.image('logo', 'assets/logo.png');
     }
 
     create() {
