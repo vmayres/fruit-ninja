@@ -143,6 +143,26 @@ export class Game extends Phaser.Scene
                 }
             });
         }
+        // Efeito de gotas de tinta caindo do trail
+        if (this.gameStarted) {
+            this.paintDropTimer += this.game.loop.delta;
+            if (this.trailPoints.length > 0 && this.paintDropTimer > 18) {
+                const last = this.trailPoints[this.trailPoints.length-1];
+                this.spawnPaintDrop(last.x, last.y, this.cursorColor);
+                this.paintDropTimer = 0;
+            }
+            for (let i = this.paintDrops.length-1; i >= 0; i--) {
+                const drop = this.paintDrops[i];
+                drop.y += drop.speed;
+                drop.alpha -= 0.025;
+                drop.scale -= 0.01;
+                if (drop.alpha <= 0 || drop.scale <= 0) {
+                    drop.setVisible(false);
+                    this.paintDropPool.push(drop);
+                    this.paintDrops.splice(i, 1);
+                }
+            }
+        }
     }
 
     initVariables ()
@@ -190,6 +210,10 @@ export class Game extends Phaser.Scene
         this.freezeText = null;
         this.gameStarted = false;
         this.foodGroup = null;
+
+        this.paintDrops = [];
+        this.paintDropPool = [];
+        this.paintDropTimer = 0;
     }
 
     initGameUi ()
@@ -569,6 +593,23 @@ export class Game extends Phaser.Scene
             const idx = Phaser.Math.Between(0, this.hitSounds.length - 1);
             this.hitSounds[idx].play();
         }
+    }
+
+    spawnPaintDrop(x, y, color) {
+        let drop;
+        if (this.paintDropPool.length > 0) {
+            drop = this.paintDropPool.pop();
+            drop.setVisible(true);
+        } else {
+            drop = this.add.circle(0, 0, Phaser.Math.Between(4, 8), color).setDepth(101);
+        }
+        drop.x = x + Phaser.Math.Between(-6, 6);
+        drop.y = y + Phaser.Math.Between(-6, 6);
+        drop.setFillStyle(color);
+        drop.alpha = 0.7;
+        drop.scale = Phaser.Math.FloatBetween(0.7, 1.1);
+        drop.speed = Phaser.Math.FloatBetween(2, 4);
+        this.paintDrops.push(drop);
     }
 
     GameOver ()
