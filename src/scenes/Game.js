@@ -3,8 +3,7 @@ import Bomb from '../gameObjects/Bomb.js';
 import RedFruit from '../gameObjects/RedFruit.js';
 import GreenFruit from '../gameObjects/GreenFruit.js';
 import BlueFruit from '../gameObjects/BlueFruit.js';
-import SuperBanana from '../gameObjects/SuperBanana.js'; // Importa a nova classe SuperBanana
-
+import SuperBanana from '../gameObjects/SuperBanana.js';
 
 export class Game extends Phaser.Scene
 {
